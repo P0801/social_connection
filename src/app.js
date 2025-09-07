@@ -1,9 +1,32 @@
 const express = require('express');
 const app = express();
 
+
+// app.use("/",(req,res)=>{
+//     res.send("this is route")
+// })
+
 app.use("/padma",(req,res)=>{
-    res.send("This is API Response");
+    res.send("Thahaha");
 })
+
+app.get("/padma",(req,res) => {
+    res.send("this is padma get api");
+})
+
+app.post("/padma",(req,res)=> {
+    res.send("this is padma post api");
+})
+
+app.use('/padma/hello/a',(req,res)=>{
+    
+    res.send("this is combined");
+})
+
+
+// app.use("/padma",(req,res)=>{
+//     res.send("This is API Response");
+// })
 
 
 app.use("/pp",(req,res)=>{
