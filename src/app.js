@@ -1,13 +1,27 @@
 const express = require('express');
+const { User } = require('./schema/userSchema')
 const app = express();
 
-app.use('/user',(req, res,next) => {
-    console.log("sjhsjd")
-    next();
-    res.send("Rout handler 1");
+const { authCheck } = require('./middleware/auth');
+//const { mongoDBConnect }
+const { connectDB } = require('./config/database');
+
+//app.use('/',authCheck);
+
+app.use('/user',(err,req, res,next) => {
+    throw new Error("asas");
+    console.log("asas",err);
+  //  next();
+   // res.send("Rout handler 1");
 },(req,res)=>{
     res.send("second resp");
 })
+
+app.get("/admin/",authCheck,(req,res) => {
+    res.send("hello");
+})
+
+
 
 // /user is route
 // (req,res) => {} is route handler
@@ -55,7 +69,27 @@ app.use('/user',(req, res,next) => {
 //     res.send("This is API test 2323");
 // })
 
+app.post('/signup',async (req, res) => {
+    userObj = {
+        firstName: 'Padma',
+        lastName: 'Modi',
+        email: 'padmamodi1@gmail.com',
+        gender: 'female',
+        age: '26'
+    }
+    const user = new User(userObj);
+    await user.save();
+    res.send('User signed up');
+})
 
-app.listen(9000,() => {
+
+connectDB().then(()=>{
+    console.log("mongoDB connected");
+    app.listen(9000,() => {
     console.log("server is running");
 });
+}).catch((err) => {
+
+    throw new Error(err)
+}) 
+
