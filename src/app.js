@@ -6,7 +6,7 @@ const { authCheck } = require('./middleware/auth');
 //const { mongoDBConnect }
 const { connectDB } = require('./config/database');
 
-//app.use('/',authCheck);
+app.use(express.json());
 
 app.use('/user',(err,req, res,next) => {
     throw new Error("asas");
@@ -70,17 +70,72 @@ app.get("/admin/",authCheck,(req,res) => {
 // })
 
 app.post('/signup',async (req, res) => {
-    userObj = {
-        firstName: 'Padma',
-        lastName: 'Modi',
-        email: 'padmamodi1@gmail.com',
-        gender: 'female',
-        age: '26'
-    }
-    const user = new User(userObj);
+    console.log(req.body);
+    // userObj = {
+    //     firstName: 'Padma',
+    //     lastName: 'Modi',
+    //     email: 'padmamodi1@gmail.com',
+    //     gender: 'female',
+    //     age: '26'
+    // }
+    const user = new User(req.body.user);
     await user.save();
     res.send('User signed up');
 })
+
+app.get("/feed",async (req, res) => {
+    console.log(req.query);
+    const userData = await User.find({'email': req.query.email});
+    if(userData.length) {
+
+        res.send(userData);
+    }
+    else{
+        res.status(404).send("No user");
+    }
+    
+})
+
+app.get("/all",async (req, res) => {
+    console.log(req.query);
+    const userData = await User.find({});
+    if(userData.length) {
+
+        res.send(userData);
+    }
+    else{
+        res.status(404).send("No user");
+    }
+    
+})
+
+app.get("/getOne",async (req, res) => {
+    console.log(req.query);
+    const userData = await User.findOne({email: req.query.email});
+    if(userData) {
+
+        res.send(userData);
+    }
+    else{
+        res.status(404).send("No user");
+    }
+    
+})
+
+
+app.delete("/deleteOne",async (req, res) => {
+    console.log(req.query);
+    const userData = await User.findOne({email: req.query.email});
+    if(userData) {
+        const userData1 = await User.findByIdAndDelete(userData._id);
+        res.send(userData1);
+    }
+    else{
+        res.status(404).send("No user");
+    }
+    
+})
+
 
 
 connectDB().then(()=>{
